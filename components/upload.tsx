@@ -1,5 +1,5 @@
 import { CheckCircle2, Image as ImageIcon, Upload as UploadIcon } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useOutletContext } from 'react-router';
 import {
   PROGRESS_INTERVAL_MS,
@@ -18,29 +18,66 @@ const Upload = ({ onComplete }: UploadProps) => {
   const [progress, setProgress] = useState(0);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const intervalRef = useRef<number | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   const { isSignedIn } = useOutletContext<AuthContext>();
 
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
+
   const processFile = (nextFile: File) => {
     if (!isSignedIn) return;
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
 
     setFile(nextFile);
     setIsDragging(false);
     setProgress(0);
 
     const reader = new FileReader();
+    reader.onerror = () => {
+        setFile(null);
+        setProgress(0);
+      };
     reader.onload = () => {
       const base64DataUrl = String(reader.result ?? '');
 
       let current = 0;
-      const intervalId = window.setInterval(() => {
+      intervalRef.current = window.setInterval(() => {
         current = Math.min(100, current + PROGRESS_STEP);
         setProgress(current);
 
         if (current >= 100) {
-          window.clearInterval(intervalId);
-          window.setTimeout(() => {
+          if (intervalRef.current) {
+            window.clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+          if (timeoutRef.current) {
+            window.clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
+
+          timeoutRef.current = window.setTimeout(() => {
             onComplete?.(base64DataUrl);
+            timeoutRef.current = null;
           }, REDIRECT_DELAY_MS);
         }
       }, PROGRESS_INTERVAL_MS);
