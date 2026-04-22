@@ -7,10 +7,11 @@ import {
   REDIRECT_DELAY_MS,
 } from '../lib/constants';
 
-
 type UploadProps = {
   onComplete?: (base64DataUrl: string) => void;
 };
+
+const allowedTypes = ['image/jpeg', 'image/png'];
 
 const Upload = ({ onComplete }: UploadProps) => {
   const [file, setFile] = useState<File | null>(null);
@@ -25,59 +26,50 @@ const Upload = ({ onComplete }: UploadProps) => {
 
   useEffect(() => {
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
 
   const processFile = (nextFile: File) => {
     if (!isSignedIn) return;
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+    // ✅ File type validation
+    if (!allowedTypes.includes(nextFile.type)) {
+      alert('Only JPG and PNG files are allowed.');
+      return;
     }
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+
+    // cleanup previous timers
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     setFile(nextFile);
     setIsDragging(false);
     setProgress(0);
 
     const reader = new FileReader();
+
     reader.onerror = () => {
-        setFile(null);
-        setProgress(0);
-      };
+      setFile(null);
+      setProgress(0);
+    };
+
     reader.onload = () => {
       const base64DataUrl = String(reader.result ?? '');
 
       let current = 0;
+
       intervalRef.current = window.setInterval(() => {
         current = Math.min(100, current + PROGRESS_STEP);
         setProgress(current);
 
         if (current >= 100) {
-          if (intervalRef.current) {
-            window.clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
-          if (timeoutRef.current) {
-            window.clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-          }
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
           timeoutRef.current = window.setTimeout(() => {
             onComplete?.(base64DataUrl);
-            timeoutRef.current = null;
           }, REDIRECT_DELAY_MS);
         }
       }, PROGRESS_INTERVAL_MS);
@@ -88,8 +80,10 @@ const Upload = ({ onComplete }: UploadProps) => {
 
   const onInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     if (!isSignedIn) return;
+
     const nextFile = e.target.files?.[0];
     if (!nextFile) return;
+
     processFile(nextFile);
   };
 
@@ -118,79 +112,83 @@ const Upload = ({ onComplete }: UploadProps) => {
   const onDrop: React.DragEventHandler<HTMLDivElement> = (e) => {
     preventDefaults(e);
     setIsDragging(false);
+
     if (!isSignedIn) return;
 
-    const nextFile = e.dataTransfer.files?.[0];
-    if (!nextFile) return;
-    processFile(nextFile);
+    const droppedFile = e.dataTransfer.files?.[0];
+
+    if (droppedFile && allowedTypes.includes(droppedFile.type)) {
+      processFile(droppedFile);
+    } else {
+      alert('Only JPG and PNG files are allowed.');
+    }
   };
 
   const onClickDropzone = () => {
     if (!isSignedIn) return;
     inputRef.current?.click();
   };
+
   return (
     <div className="upload">
-  {!file ? (
-    <div
-      className={`dropzone ${isDragging ? 'is-dragging' : ''} ${!isSignedIn ? 'is-disabled' : ''}`}
-      onClick={onClickDropzone}
-      onDragEnter={onDragEnter}
-      onDragOver={onDragOver}
-      onDragLeave={onDragLeave}
-      onDrop={onDrop}
-      aria-disabled={!isSignedIn}
-      role="button"
-      tabIndex={!isSignedIn ? -1 : 0}
-    >
-      <input
-        ref={inputRef}
-        type="file"
-        className="drop-input"
-        accept=".jpg, .jpeg, .png"
-        disabled={!isSignedIn}
-        onChange={onInputChange}
-      />
+      {!file ? (
+        <div
+          className={`dropzone ${isDragging ? 'is-dragging' : ''} ${!isSignedIn ? 'is-disabled' : ''}`}
+          onClick={onClickDropzone}
+          onDragEnter={onDragEnter}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onDrop={onDrop}
+          aria-disabled={!isSignedIn}
+          role="button"
+          tabIndex={!isSignedIn ? -1 : 0}
+        >
+          <input
+            ref={inputRef}
+            type="file"
+            className="drop-input"
+            accept=".jpg, .jpeg, .png"
+            disabled={!isSignedIn}
+            onChange={onInputChange}
+          />
 
-      <div className="drop-content">
-        <div className="drop-icon">
-          <UploadIcon size={20} />
+          <div className="drop-content">
+            <div className="drop-icon">
+              <UploadIcon size={20} />
+            </div>
+            <p>
+              {isSignedIn
+                ? "Click to upload or just drag and drop"
+                : "Sign in or sign up with Puter to upload"}
+            </p>
+            <p className="help">Maximum file size 50 MB.</p>
+          </div>
         </div>
-        <p>
-          {isSignedIn ? (
-            "Click to upload or just drag and drop"
-          ) : (
-            "Sign in or sign up with Puter to upload"
-          )}
-        </p>
-        <p className="help">Maximum file size 50 MB.</p>
-      </div>
-    </div>
-  ) : (
-    <div className="upload-status">
-  <div className="status-content">
-    <div className="status-icon">
-      {progress === 100 ? (
-        <CheckCircle2 className="check" />
       ) : (
-        <ImageIcon className="image" />
+        <div className="upload-status">
+          <div className="status-content">
+            <div className="status-icon">
+              {progress === 100 ? (
+                <CheckCircle2 className="check" />
+              ) : (
+                <ImageIcon className="image" />
+              )}
+            </div>
+
+            <h3>{file.name}</h3>
+
+            <div className="progress">
+              <div className="bar" style={{ width: `${progress}%` }} />
+
+              <p className="status-text">
+                {progress < 100 ? 'Analyzing Floor Plan...' : 'Redirecting...'}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
     </div>
+  );
+};
 
-    <h3>{file.name}</h3>
-
-    <div className='progress'>
-      <div className="bar" style={{ width: `${progress}%` }} />
-
-      <p className="status-text">
-        {progress < 100 ? 'Analyzing Floor Plan...' : 'Redirecting...'}
-      </p>
-    </div>
-  </div>
-</div>
-  )}
-</div>
-  )
-}
-
-export default Upload
+export default Upload;
