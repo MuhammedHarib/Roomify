@@ -6,6 +6,8 @@ import { Button } from "../../components/ui/button";
 import { Layers } from "lucide-react";
 import Upload from "../../components/upload";
 import { useNavigate } from "react-router";
+import { createProject } from "~/lib/puter.action"
+import { useState } from "react";
 export function meta({ }: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
@@ -14,11 +16,44 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const navigate=useNavigate();
-  const handleUploadComplete = (base64image: string) => {
-    console.log("Upload complete:", base64image);
+  const navigate = useNavigate();
+  const [projects, setprojects] = useState<DesignItem[]>([])
+
+
+
+  const handleUploadComplete = async (base64Image: string) => {
+    console.log("Upload complete:", base64Image);
     const newId = Date.now().toString();
-    navigate(`/visualizer/${newId}`);
+    const name = `Residence${newId}`;
+
+
+    const newItem = {
+      id: newId, name,
+      sourceImage: base64Image,
+      renderedImage: undefined,
+      timestamp: Date.now()
+    }
+
+    const saved = await createProject({ item: newItem, visibility: 'private' });
+
+    if (!saved) {
+      console.error("Failed to create project");
+      return false;
+    }
+
+    setprojects((prev) => [newItem, ...prev]);
+
+    navigate(`/visualizer/${newId}`, {
+      state: {
+        initialImage: saved.sourceImage,
+        initialRendered: saved.renderedImage || null,
+        name
+      }
+    });
+
+    return true
+
+
   };
   return (
     <div className="home">
@@ -60,58 +95,56 @@ export default function Home() {
               <h3>Upload your floor plan</h3>
               <p>Supports JPG, PNG, formats up to 10MB</p>
             </div>
-         <Upload
-           onComplete={handleUploadComplete}
-         />
+            <Upload
+              onComplete={handleUploadComplete}
+            />
             {/* <p>Upload images</p> */}
           </div>
         </div>
       </section>
       <section className="projects">
-  <div className="section-inner">
-    <div className="section-head">
-      <div className="copy">
-        <h2>Projects</h2>
-        <p>
-          Your latest work and shared 
-          community projects, all in one 
-          place.
-        </p>
-      </div>
-    </div>
-
-    <div className="projects-grid">
-      <div className="project-card group">
-        <div className="preview">
-          <img 
-            src="https://roomify-mlhuk267-dfwu1i.puter.site/projects/1770803585402/rendered.png" 
-            alt="project preview "
-          />
-          <div className="badge"><span>comunity</span></div>
-        </div>
-
-
-
-        <div className="card-body">
-
-             <div>
-              <h3>Project Karachi </h3>
-              <div className="meta">
-                <Clock size={12}/>
-                <span>{new Date('01.12.2022').toLocaleDateString()}</span>
-                <span>By ABDUS SALAM</span>
-              </div>
-             </div>
-
-          <div className="arrow">
-            <ArrowRight size={12} />
+        <div className="section-inner">
+          <div className="section-head">
+            <div className="copy">
+              <h2>Projects</h2>
+              <p>
+                Your latest work and shared
+                community projects, all in one
+                place.
+              </p>
+            </div>
           </div>
 
+          <div className="projects-grid">
+            {projects.map(({ id, name, renderedImage, sourceImage, timestamp }) => (
+              <div className="project-card group" key={id}>
+                <div className="preview">
+                  <img
+                    src={renderedImage || sourceImage}
+                    alt="project preview"
+                  />
+                  <div className="badge"><span>community</span></div>
+                </div>
+
+                <div className="card-body">
+                  <div>
+                    <h3>{name}</h3>
+                    <div className="meta">
+                      <Clock size={12} />
+                      <span>{new Date(timestamp).toLocaleDateString()}</span>
+                      <span>By ABDUS SALAM</span>
+                    </div>
+                  </div>
+
+                  <div className="arrow">
+                    <ArrowRight size={12} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
     </div>
   )
 }
