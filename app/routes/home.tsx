@@ -22,38 +22,42 @@ export default function Home() {
 
 
   const handleUploadComplete = async (base64Image: string) => {
-    console.log("Upload complete:", base64Image);
-    const newId = Date.now().toString();
-    const name = `Residence${newId}`;
-
-
-    const newItem = {
-      id: newId, name,
-      sourceImage: base64Image,
-      renderedImage: undefined,
-      timestamp: Date.now()
-    }
-
-    const saved = await createProject({ item: newItem, visibility: 'private' });
-
-    if (!saved) {
-      console.error("Failed to create project");
+    try {
+      const newId = Date.now().toString();
+      const name = `Residence${newId}`;
+  
+      const newItem = {
+        id: newId, name,
+        sourceImage: base64Image,
+        renderedImage: undefined,
+        timestamp: Date.now()
+      };
+  
+      console.log("1. Calling createProject...");
+      const saved = await createProject({ item: newItem, visibility: 'private' });
+      console.log("2. createProject returned:", saved);  // ← what does this print?
+  
+      if (!saved) {
+        console.error("createProject returned null — check hosting setup");
+        return false;
+      }
+  
+      console.log("3. Navigating to visualizer...");
+      setprojects((prev) => [saved, ...prev]);
+  
+      navigate(`/visualizer/${newId}`, {
+        state: {
+          initialImage: saved.sourceImage,
+          initialRendered: saved.renderedImage || null,
+          name
+        }
+      });
+  
+      return true;
+    } catch (err) {
+      console.error("handleUploadComplete crashed:", err);
       return false;
     }
-
-    setprojects((prev) => [newItem, ...prev]);
-
-    navigate(`/visualizer/${newId}`, {
-      state: {
-        initialImage: saved.sourceImage,
-        initialRendered: saved.renderedImage || null,
-        name
-      }
-    });
-
-    return true
-
-
   };
   return (
     <div className="home">

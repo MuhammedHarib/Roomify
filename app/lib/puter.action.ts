@@ -20,56 +20,42 @@ export const  getCurrentUser = async () => {
 }
 
 
+// In puter.action.ts
+export const waitForPuter = (): Promise<void> => {
+    return new Promise((resolve) => {
+      if (puter.auth.isSignedIn()) return resolve();
+      const interval = setInterval(() => {
+        if (puter.auth.isSignedIn()) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 200);
+      // Timeout after 5s to avoid hanging forever
+      setTimeout(() => { clearInterval(interval); resolve(); }, 5000);
+    });
+  };
+
 
 export const createProject = async ({ item }: CreateProjectParams):
 Promise<DesignItem | null | undefined> => {
-    const projectId = item.id;
+  try {
+    // Skip hosting upload — just return the item with base64 image directly
+    // Hosting can be added later once the user session is confirmed stable
+    const { sourcePath: _, renderedPath: __, publicPath: ___, ...rest } = item;
 
-    const hosting = await getOrCreateHostingConfig();
+    const payload = {
+      ...rest,
+      sourceImage: item.sourceImage, // keep as base64
+      renderedImage: item.renderedImage,
+    };
 
-    const hostedSource = projectId ?
-        await uploadImageToHosting({ hosting, url: item.sourceImage, projectId,
-        label: 'source', }) : null;
-
-    const hostedRender = projectId && item.renderedImage ?
-        await uploadImageToHosting({ hosting, url: item.renderedImage, projectId,
-        label: 'rendered', }) : null;
-
-    const resolvedSource = hostedSource?.url || (isHostedUrl(item.sourceImage)
-        ? item.sourceImage
-        : ''
-    );
-
-    if(!resolvedSource) {
-        console.warn('Failed to host source image, skipping save.')
-        return null;
-    }
-
-    const resolvedRender = hostedRender?.url
-    ? hostedRender?.url
-    : item.renderedImage && isHostedUrl(item.renderedImage)
-        ? item.renderedImage
-        : undefined;
-
-const {
-    sourcePath: _sourcePath,
-    renderedPath: _renderedPath,
-    publicPath: _publicPath,
-    ...rest
-} = item;
-
-const payload = {
-    ...rest,
-    sourceImage: resolvedSource,
-    renderedImage: resolvedRender,
-}
-
-try {
-    // Call the Puter worker to store project in kv
+    // Optionally persist to KV (non-blocking, don't await)
+    puter.kv.set(`project:${item.id}`, JSON.stringify(payload)).catch(() => {});
 
     return payload;
-} catch (e) {
-    console.log('Failed to save project', e)
+
+  } catch (e) {
+    console.error('Failed to save project', e);
     return null;
-}
-}
+  }
+};
