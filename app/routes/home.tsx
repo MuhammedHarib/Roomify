@@ -7,7 +7,7 @@ import { Layers } from "lucide-react";
 import Upload from "../../components/upload";
 import { useNavigate } from "react-router";
 import { createProject } from "~/lib/puter.action"
-import { useState } from "react";
+import { useRef, useState } from "react";
 export function meta({ }: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
@@ -18,13 +18,15 @@ export function meta({ }: Route.MetaArgs) {
 export default function Home() {
   const navigate = useNavigate();
   const [projects, setprojects] = useState<DesignItem[]>([])
-
-
+  const isCreatingProjectRef= useRef(false);
 
   const handleUploadComplete = async (base64Image: string) => {
+    if (isCreatingProjectRef.current) return false;
+    isCreatingProjectRef.current = true;
+  
     try {
       const newId = Date.now().toString();
-      const name = `Residence${newId}`;
+      const name = `Residence ${newId}`;
   
       const newItem = {
         id: newId, name,
@@ -35,7 +37,7 @@ export default function Home() {
   
       console.log("1. Calling createProject...");
       const saved = await createProject({ item: newItem, visibility: 'private' });
-      console.log("2. createProject returned:", saved);  // ← what does this print?
+      console.log("2. createProject returned:", saved);
   
       if (!saved) {
         console.error("createProject returned null — check hosting setup");
@@ -57,6 +59,8 @@ export default function Home() {
     } catch (err) {
       console.error("handleUploadComplete crashed:", err);
       return false;
+    } finally {
+      isCreatingProjectRef.current = false;
     }
   };
   return (
