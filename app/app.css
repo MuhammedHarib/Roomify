@@ -13,7 +13,6 @@
     --shadow-neobrutalism: 4px 4px 0px 0px rgba(0, 0, 0, 1);
 }
 
-@layer base {
     html {
         scroll-behavior: smooth;
     }
@@ -52,9 +51,7 @@
     ::-webkit-scrollbar-thumb:hover {
         background: #9ca3af;
     }
-}
 
-@layer components {
     .btn {
         @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed;
 
@@ -104,23 +101,17 @@
     }
 
     .navbar {
-        @apply fixed top-0 w-full z-50;
+        @apply fixed top-0 w-full z-50 border-b border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.05)];
+        
+        /* Frosted glass effect using Tailwind v4 syntax */
+        @apply bg-white/35 backdrop-blur-[14px];
+        -webkit-backdrop-filter: blur(14px); /* Vendor prefix fallback */
       
-        /* Frosted glass effect */
-        background: rgba(255, 255, 255, 0.35);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-      
-        /* subtle glass edge */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      
-        /* depth */
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-      
-        .inner {
+
+        & .inner {
           @apply max-w-7xl mx-auto px-6 h-16 flex items-center justify-between;
       
-          .left {
+          & .left {
             @apply flex items-center space-x-8;
       
             .brand {
@@ -144,7 +135,7 @@
             }
           }
       
-          .actions {
+          & .actions {
             @apply flex items-center space-x-4;
       
             .greeting {
@@ -607,4 +598,3 @@
             @apply text-sm text-zinc-500;
         }
     }
-}
