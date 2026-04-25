@@ -6,8 +6,8 @@ import { Button } from "../../components/ui/button";
 import { Layers } from "lucide-react";
 import Upload from "../../components/upload";
 import { useNavigate } from "react-router";
-import { createProject } from "~/lib/puter.action"
-import { useRef, useState } from "react";
+import { createProject, getProjects } from "~/lib/puter.action"
+import { useRef, useState,useEffect } from "react";
 export function meta({ }: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
@@ -17,7 +17,7 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function Home() {
   const navigate = useNavigate();
-  const [projects, setprojects] = useState<DesignItem[]>([])
+  const [projects, setProjects] = useState<DesignItem[]>([])
   const isCreatingProjectRef= useRef(false);
 
   const handleUploadComplete = async (base64Image: string) => {
@@ -63,6 +63,16 @@ export default function Home() {
       isCreatingProjectRef.current = false;
     }
   };
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const items = await getProjects();
+  
+      setProjects(items)
+    }
+  
+    fetchProjects();
+  }, []);
   return (
     <div className="home">
       <Navbar />
