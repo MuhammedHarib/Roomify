@@ -8,6 +8,13 @@ import Upload from "../../components/upload";
 import { useNavigate } from "react-router";
 import { createProject, getProjects } from "~/lib/puter.action"
 import { useRef, useState,useEffect } from "react";
+
+
+
+
+
+
+
 export function meta({ }: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
@@ -45,7 +52,7 @@ export default function Home() {
       }
   
       console.log("3. Navigating to visualizer...");
-      setprojects((prev) => [saved, ...prev]);
+      setProjects((prev) => [saved, ...prev]);
   
       navigate(`/visualizer/${newId}`, {
         state: {
@@ -67,12 +74,16 @@ export default function Home() {
   useEffect(() => {
     const fetchProjects = async () => {
       const items = await getProjects();
-  
+      console.log("fetched projects:", items);
       setProjects(items)
     }
   
     fetchProjects();
   }, []);
+
+
+
+
   return (
     <div className="home">
       <Navbar />
@@ -135,7 +146,8 @@ export default function Home() {
 
           <div className="projects-grid">
             {projects.map(({ id, name, renderedImage, sourceImage, timestamp }) => (
-              <div className="project-card group" key={id}>
+              <div className="project-card group" key={id}  onClick={() => navigate(`/visualizer/${id}`)}  // ← add this
+              style={{ cursor: "pointer" }}>
                 <div className="preview">
                   <img
                     src={renderedImage || sourceImage}
