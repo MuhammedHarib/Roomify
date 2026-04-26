@@ -26,6 +26,24 @@ export default function Home() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<DesignItem[]>([])
   const isCreatingProjectRef= useRef(false);
+  const uploadRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Stop observing once the animation has triggered
+          if (uploadRef.current) observer.unobserve(uploadRef.current);
+        }
+      },
+      { threshold: 0.15 } // Trigger when 15% of the component is visible
+    );
+
+    if (uploadRef.current) observer.observe(uploadRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const handleUploadComplete = async (base64Image: string) => {
     if (isCreatingProjectRef.current) return false;
@@ -87,32 +105,39 @@ export default function Home() {
   return (
     <div className="home">
       <Navbar />
-      <section className="hero">
-        <div className="announce">
-          <div className="dot">
-            <div className="pulse"></div>
+      <main className="content">
+        <section className="hero">
+          <div className="hero-card">
+            <div className="announce">
+              <div className="dot">
+                <div className="pulse"></div>
+              </div>
+
+              <p>Introducing Roomify 2.0</p>
+            </div>
+
+            <h1>Build beautiful spaces at the speed of thought with Roomify</h1>
+
+            <p className="subtitle">
+              Roomify is an AI-first design environment
+              that helps you visualize, render, and ship
+              architectural projects faster than ever.
+            </p>
+
+            <div className="actions">
+              <a href="#upload" className="cta">
+                Start Building <ArrowRight className="icon" />
+              </a>
+              <Button variant="outline" size="lg" className="demo"> Watch Demo</Button>
+            </div>
           </div>
+        </section>
 
-          <p>Introducing Roomify 2.0</p>
-        </div>
-
-        <h1>Build beautiful spaces at the speed of thought with Roomify</h1>
-
-        <p className="subtitle">
-          Roomify is an AI-first design environment
-          that helps you visualize, render, and ship
-          architectural projects faster than ever.
-        </p>
-
-        <div className="actions">
-          <a href="#upload" className="cta">
-            Start Building <ArrowRight className="icon" />
-          </a>
-          <Button variant="outline" size="lg" className="demo"> Watch Demo</Button>
-
-
-        </div>
-        <div id="upload" className="upload-shell">
+        <div 
+          id="upload" 
+          ref={uploadRef} 
+          className={`upload-shell ${isVisible ? 'is-visible' : ''}`}
+        >
           <div className="grid-overlay" />
 
           <div className="upload-card">
@@ -127,54 +152,54 @@ export default function Home() {
             <Upload
               onComplete={handleUploadComplete}
             />
-            {/* <p>Upload images</p> */}
           </div>
         </div>
-      </section>
-      <section className="projects">
-        <div className="section-inner">
-          <div className="section-head">
-            <div className="copy">
-              <h2>Projects</h2>
-              <p>
-                Your latest work and shared
-                community projects, all in one
-                place.
-              </p>
+
+        <section className="projects">
+          <div className="section-inner">
+            <div className="section-head">
+              <div className="copy">
+                <h2>Projects</h2>
+                <p>
+                  Your latest work and shared
+                  community projects, all in one
+                  place.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className="projects-grid">
-            {projects.map(({ id, name, renderedImage, sourceImage, timestamp }) => (
-              <div className="project-card group" key={id}  onClick={() => navigate(`/visualizer/${id}`)}  // ← add this
-              style={{ cursor: "pointer" }}>
-                <div className="preview">
-                  <img
-                    src={renderedImage || sourceImage}
-                    alt="project preview"
-                  />
-                  <div className="badge"><span>community</span></div>
-                </div>
+            <div className="projects-grid">
+              {projects.map(({ id, name, renderedImage, sourceImage, timestamp }) => (
+                <div className="project-card group" key={id}  onClick={() => navigate(`/visualizer/${id}`)}  // ← add this
+                style={{ cursor: "pointer" }}>
+                  <div className="preview">
+                    <img
+                      src={renderedImage || sourceImage}
+                      alt="project preview"
+                    />
+                    <div className="badge"><span>community</span></div>
+                  </div>
 
-                <div className="card-body">
-                  <div>
-                    <h3>{name}</h3>
-                    <div className="meta">
-                      <Clock size={12} />
-                      <span>{new Date(timestamp).toLocaleDateString()}</span>
-                      <span>By ABDUS SALAM</span>
+                  <div className="card-body">
+                    <div>
+                      <h3>{name}</h3>
+                      <div className="meta">
+                        <Clock size={12} />
+                        <span>{new Date(timestamp).toLocaleDateString()}</span>
+                        <span>By ABDUS SALAM</span>
+                      </div>
+                    </div>
+
+                    <div className="arrow">
+                      <ArrowRight size={12} />
                     </div>
                   </div>
-
-                  <div className="arrow">
-                    <ArrowRight size={12} />
-                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   )
 }
