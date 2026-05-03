@@ -14,8 +14,9 @@
     --shadow-neobrutalism: 4px 4px 0px 0px rgba(0, 0, 0, 1);
 }
 
-html {
+html, body {
     scroll-behavior: smooth;
+    @apply overflow-x-hidden w-full;
 }
 
 body {
@@ -772,46 +773,50 @@ h4 { font-weight: 600; }
 
 /* ── Footer ─────────────────────────────────────────────────────── */
 .footer {
-    @apply relative w-full text-white bg-cover bg-center bg-no-repeat;
-    background-image: linear-gradient(rgba(10,30,20,0.72), rgba(10,30,20,0.85)), url('./assets/hero_bg_house.webp');
+    @apply relative w-full max-w-[100vw] m-0 p-0 text-white bg-cover bg-center bg-no-repeat overflow-hidden;
+    background-image: 
+        linear-gradient(to bottom, #fff 0%, transparent 15%),
+        linear-gradient(to bottom, rgba(10,30,20,0.2), rgba(10,30,20,0.5)), 
+        url('./assets/hero_bg_house.webp');
 
     & .footer-top {
-        @apply flex flex-col lg:flex-row lg:items-center justify-between py-16 px-12 gap-10;
+        @apply flex flex-col items-center text-center py-24 px-12 gap-12;
     }
 
     & .big-heading {
-        @apply text-6xl md:text-7xl font-bold text-white;
+        @apply text-7xl md:text-8xl font-bold text-white/90;
         letter-spacing: -0.03em;
+        text-shadow: 0 0 30px rgba(255,255,255,0.15);
     }
 
     & .subscribe-section {
-        @apply flex flex-col gap-3 lg:items-end w-full lg:w-auto;
+        @apply flex flex-col gap-4 items-center w-full;
     }
 
     & .subscribe-label {
-        @apply text-[10px] font-bold uppercase tracking-widest text-[#EA580C];
+        @apply text-[11px] font-bold uppercase tracking-[0.2em] text-[#EA580C];
     }
 
     & .subscribe-form {
-        @apply flex items-center bg-white/10 border border-white/20 rounded-full p-1 w-full max-w-sm;
+        @apply flex flex-col md:flex-row items-center bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl md:rounded-full p-2 md:p-1.5 w-full max-w-md gap-3 md:gap-0;
     }
 
     & .subscribe-input {
-        @apply bg-transparent border-none outline-none px-4 py-2 text-sm text-white placeholder:text-white/40 flex-grow;
+        @apply w-full bg-transparent border-none outline-none px-6 py-2 text-sm text-white placeholder:text-white/30 flex-grow;
     }
 
     & .subscribe-btn {
-        @apply bg-[#EA580C] hover:bg-[#C2410C] text-white text-[10px] font-bold uppercase tracking-widest px-6 py-2.5 rounded-full transition-colors whitespace-nowrap;
+        @apply bg-[#EA580C] hover:bg-[#C2410C] text-white text-[11px] font-bold uppercase tracking-widest px-8 py-3 rounded-full transition-all active:scale-95 whitespace-nowrap;
     }
 
     & .footer-bottom {
-        @apply grid grid-cols-2 md:grid-cols-4 gap-12 py-10 px-12 border-t border-white/10;
+        @apply grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12 py-12 md:py-16 px-6 md:px-12 border-t border-white/5;
     }
 
     & .footer-col { @apply flex flex-col gap-5; }
     & .col-heading { @apply text-xs font-bold uppercase tracking-widest text-[#EA580C]; }
     & .footer-links { @apply flex flex-col gap-2.5; }
     & .footer-link {
-        @apply text-sm font-normal text-white opacity-70 hover:opacity-100 transition-opacity;
+        @apply text-sm font-normal text-white/60 hover:text-white transition-colors py-1;
     }
 }

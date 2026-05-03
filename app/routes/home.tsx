@@ -1,28 +1,18 @@
 import type { Route } from "./+types/home";
-
-import Navbar from "../../components/Navbar";
-
-import { ArrowRight, Clock } from "lucide-react";
-
-import { Button } from "../../components/ui/button";
-
-import { Layers } from "lucide-react";
-
-import Upload from "../../components/upload";
-
-import Footer from "../../components/Footer";
-
-
-import { useNavigate } from "react-router";
-
-import { createProject, getProjects } from "~/lib/puter.action"
-
 import { useRef, useState, useEffect } from "react";
-
+import { useNavigate } from "react-router";
+// Third-party libraries
+import { ArrowRight, Clock, Layers } from "lucide-react";
+import { ReactCompareSlider, ReactCompareSliderImage } from "react-compare-slider";
+// Local components
+import Navbar from "../../components/Navbar";
+import { Button } from "../../components/ui/button";
+import Upload from "../../components/upload";
+import Footer from "../../components/Footer";
+// Local lib and assets
+import { createProject, getProjects } from "~/lib/puter.action";
 import beforeImg from "~/assets/before_img.png";
 import afterImg from "~/assets/after_img.png";
-
-import { ReactCompareSlider, ReactCompareSliderImage } from "react-compare-slider";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -52,8 +42,8 @@ const GUIDE_STEPS = [
   },
 ];
 
-const BEFORE_IMAGE = beforeImg || "";
-const AFTER_IMAGE  = afterImg || "";
+const BEFORE_IMAGE = beforeImg;
+const AFTER_IMAGE  = afterImg;
 
 export default function Home() {
   const navigate = useNavigate();
@@ -327,7 +317,7 @@ export default function Home() {
           </div>
         </section>
 
-        <Footer />
+        {isMounted && <Footer />}
       </main>
     </div>
   )
