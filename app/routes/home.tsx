@@ -1,19 +1,22 @@
 import type { Route } from "./+types/home";
-// import { Welcome } from "../welcome/welcome";
+
 import Navbar from "../../components/Navbar";
+
 import { ArrowRight, Clock } from "lucide-react";
+
 import { Button } from "../../components/ui/button";
+
 import { Layers } from "lucide-react";
+
 import Upload from "../../components/upload";
+
 import { useNavigate } from "react-router";
+
 import { createProject, getProjects } from "~/lib/puter.action"
-import { useRef, useState,useEffect } from "react";
 
+import { useRef, useState, useEffect } from "react";
 
-
-
-
-
+import { ReactCompareSlider, ReactCompareSliderImage } from "react-compare-slider";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -22,56 +25,92 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
+const GUIDE_STEPS = [
+  {
+    id: "01",
+    label: "Upload your floor plan",
+    description:
+      "Upload any 2D floor plan — JPG, PNG up to 10MB. Our system reads the layout and prepares it for rendering.",
+  },
+  {
+    id: "02",
+    label: "AI renders your space",
+    description:
+      "Roomify's AI engine transforms your flat blueprint into a photorealistic 3D visualization in seconds.",
+  },
+  {
+    id: "03",
+    label: "Compare & export",
+    description:
+      "Drag the slider to compare your original plan with the rendered result. Export or share with one click.",
+  },
+];
+
+const BEFORE_IMAGE = "https://roomify-mlhuk267-dfwu1i.puter.site/projects/1770803585402/rendered.png";
+const AFTER_IMAGE  = "https://roomify-mlhuk267-dfwu1i.puter.site/projects/1770803585402/rendered.png";
+
 export default function Home() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<DesignItem[]>([])
-  const isCreatingProjectRef= useRef(false);
+  const isCreatingProjectRef = useRef(false);
   const uploadRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const guideRef  = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible]       = useState(false);
+  const [guideVisible, setGuideVisible] = useState(false);
+  const [activeStep, setActiveStep]     = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          // Stop observing once the animation has triggered
           if (uploadRef.current) observer.unobserve(uploadRef.current);
         }
       },
-      { threshold: 0.15 } // Trigger when 15% of the component is visible
+      { threshold: 0.15 }
     );
-
     if (uploadRef.current) observer.observe(uploadRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setGuideVisible(true);
+          if (guideRef.current) observer.unobserve(guideRef.current);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (guideRef.current) observer.observe(guideRef.current);
     return () => observer.disconnect();
   }, []);
 
   const handleUploadComplete = async (base64Image: string) => {
     if (isCreatingProjectRef.current) return false;
     isCreatingProjectRef.current = true;
-  
+
     try {
       const newId = Date.now().toString();
       const name = `Residence ${newId}`;
-  
+
       const newItem = {
         id: newId, name,
         sourceImage: base64Image,
         renderedImage: undefined,
         timestamp: Date.now()
       };
-  
-      console.log("1. Calling createProject...");
+
       const saved = await createProject({ item: newItem, visibility: 'private' });
-      console.log("2. createProject returned:", saved);
-  
+
       if (!saved) {
         console.error("createProject returned null — check hosting setup");
         return false;
       }
-  
-      console.log("3. Navigating to visualizer...");
+
       setProjects((prev) => [saved, ...prev]);
-  
+
       navigate(`/visualizer/${newId}`, {
         state: {
           initialImage: saved.sourceImage,
@@ -79,7 +118,7 @@ export default function Home() {
           name
         }
       });
-  
+
       return true;
     } catch (err) {
       console.error("handleUploadComplete crashed:", err);
@@ -92,27 +131,23 @@ export default function Home() {
   useEffect(() => {
     const fetchProjects = async () => {
       const items = await getProjects();
-      console.log("fetched projects:", items);
       setProjects(items)
     }
-  
     fetchProjects();
   }, []);
-
-
-
 
   return (
     <div className="home">
       <Navbar />
       <main className="content">
+
+        {/* ── Hero ──────────────────────────────────────────────────── */}
         <section className="hero">
           <div className="hero-card">
             <div className="announce">
               <div className="dot">
                 <div className="pulse"></div>
               </div>
-
               <p>Introducing Roomify 2.0</p>
             </div>
 
@@ -128,33 +163,113 @@ export default function Home() {
               <a href="#upload" className="cta">
                 Start Building <ArrowRight className="icon" />
               </a>
-              <Button variant="outline" size="lg" className="demo"> Watch Demo</Button>
+              <Button variant="outline" size="lg" className="demo">Watch Demo</Button>
             </div>
           </div>
         </section>
 
-        <div 
-          id="upload" 
-          ref={uploadRef} 
+        {/* ── Guide Section ─────────────────────────────────────────── */}
+        <section
+          ref={guideRef}
+          className={`guide ${guideVisible ? 'is-visible' : ''}`}
+        >
+          <div className="guide-inner">
+
+            {/* Left: headline + steps */}
+            <div className="guide-left">
+              <div className="guide-eyebrow">How it works</div>
+              <h2 className="guide-heading">
+                See what we offer<br />and how it works
+              </h2>
+              <p className="guide-sub">
+                Virtual tours, curated listings, and expert guidance —
+                everything you need to explore and find with confidence.
+              </p>
+
+              <div className="guide-steps">
+                {GUIDE_STEPS.map((step, i) => (
+                  <button
+                    key={step.id}
+                    className={`guide-step ${activeStep === i ? 'is-active' : ''}`}
+                    onClick={() => setActiveStep(i)}
+                  >
+                    <div className="step-indicator">
+                      <span className="step-num">{step.id}</span>
+                      <div className="step-line" />
+                    </div>
+                    <div className="step-body">
+                      <h4>{step.label}</h4>
+                      <p>{step.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: compare slider */}
+            <div className="guide-right">
+              <div className="guide-slider-wrap">
+                <div className="slider-label slider-label--before">2D Plan</div>
+                <div className="slider-label slider-label--after">3D Render</div>
+
+                <ReactCompareSlider
+                  defaultValue={40}
+                  style={{ width: "100%", height: "100%" }}
+                  itemOne={
+                    <ReactCompareSliderImage
+                      src={BEFORE_IMAGE}
+                      alt="2D Floor Plan"
+                      style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                    />
+                  }
+                  itemTwo={
+                    <ReactCompareSliderImage
+                      src={AFTER_IMAGE}
+                      alt="3D Rendered"
+                      style={{
+                        objectFit: "cover",
+                        width: "100%",
+                        height: "100%",
+                        filter: "sepia(0.1) saturate(1.15) brightness(1.05)"
+                      }}
+                    />
+                  }
+                />
+
+                <div className="slider-drag-hint">
+                  <span>← Drag to compare →</span>
+                </div>
+              </div>
+
+              <div className="guide-badge">
+                <span className="badge-num">{GUIDE_STEPS[activeStep].id}</span>
+                <span className="badge-label">{GUIDE_STEPS[activeStep].label}</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ── Upload Shell ──────────────────────────────────────────── */}
+        <div
+          id="upload"
+          ref={uploadRef}
           className={`upload-shell ${isVisible ? 'is-visible' : ''}`}
         >
           <div className="grid-overlay" />
-
           <div className="upload-card">
             <div className="upload-head">
               <div className="upload-icon">
                 <Layers className="icon" />
               </div>
-
               <h3>Upload your floor plan</h3>
               <p>Supports JPG, PNG, formats up to 10MB</p>
             </div>
-            <Upload
-              onComplete={handleUploadComplete}
-            />
+            <Upload onComplete={handleUploadComplete} />
           </div>
         </div>
 
+        {/* ── Projects ──────────────────────────────────────────────── */}
         <section className="projects">
           <div className="section-inner">
             <div className="section-head">
@@ -170,13 +285,14 @@ export default function Home() {
 
             <div className="projects-grid">
               {projects.map(({ id, name, renderedImage, sourceImage, timestamp }) => (
-                <div className="project-card group" key={id}  onClick={() => navigate(`/visualizer/${id}`)}  // ← add this
-                style={{ cursor: "pointer" }}>
+                <div
+                  className="project-card group"
+                  key={id}
+                  onClick={() => navigate(`/visualizer/${id}`)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="preview">
-                    <img
-                      src={renderedImage || sourceImage}
-                      alt="project preview"
-                    />
+                    <img src={renderedImage || sourceImage} alt="project preview" />
                     <div className="badge"><span>community</span></div>
                   </div>
 
@@ -189,7 +305,6 @@ export default function Home() {
                         <span>By ABDUS SALAM</span>
                       </div>
                     </div>
-
                     <div className="arrow">
                       <ArrowRight size={12} />
                     </div>
@@ -199,6 +314,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
       </main>
     </div>
   )

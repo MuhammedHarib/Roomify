@@ -1,647 +1,769 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
     --color-background: #fdfbf7;
-    --color-foreground: #1a1a1a;
+    --color-foreground: #111111;
     --color-surface: #ffffff;
     --color-surface-highlight: #f3f4f6;
     --color-primary: #f97316;
     --color-secondary: #3b82f6;
     --color-accent: #8b5cf6;
     --font-serif: "Instrument Serif", serif;
-    --font-sans: Inter, sans-serif;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --shadow-neobrutalism: 4px 4px 0px 0px rgba(0, 0, 0, 1);
 }
 
-    html {
-        scroll-behavior: smooth;
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #fdfbf7;
+    color: var(--color-foreground);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 15px;
+    line-height: 1.6;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* ── Global heading reset ─ refined Inter style ─────────────────── */
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+h1 { font-weight: 700; }
+h2 { font-weight: 700; }
+h3 { font-weight: 600; }
+h4 { font-weight: 600; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #fdfbf7; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+.btn {
+    @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.01em;
+
+    &.btn--primary {
+        @apply bg-primary text-white hover:bg-[#EA580C] shadow-sm;
     }
-
-    body {
-        background-color: #fdfbf7;
-        color: var(--color-foreground);
-        font-family: Inter, sans-serif;
-        -webkit-font-smoothing: antialiased;
+    &.btn--secondary {
+        @apply bg-white text-black border border-zinc-200 hover:bg-zinc-50 shadow-sm;
     }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        font-family: "Instrument Serif", serif;
+    &.btn--ghost {
+        @apply text-zinc-600 hover:text-black hover:bg-black/5;
     }
-
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+    &.btn--outline {
+        @apply bg-transparent border border-zinc-300 text-zinc-900 hover:bg-zinc-100;
     }
+    &.btn--sm  { @apply px-3 py-1.5 text-xs uppercase tracking-wide; }
+    &.btn--md  { @apply px-5 py-2.5 text-sm; }
+    &.btn--lg  { @apply px-8 py-3 text-sm uppercase tracking-wide font-semibold; }
+    &.btn--full { @apply w-full; }
+}
 
-    ::-webkit-scrollbar-track {
-        background: #fdfbf7;
+/* ── Card ───────────────────────────────────────────────────────── */
+.card {
+    @apply bg-surface border border-white/5 rounded-3xl p-6 shadow-xl;
+    & .header {
+        @apply flex justify-between items-center mb-4;
+        & h3 { @apply text-lg font-semibold text-zinc-100; }
     }
+}
 
-    ::-webkit-scrollbar-thumb {
-        background: #d1d5db;
-        border-radius: 4px;
-    }
+/* ── Navbar ─────────────────────────────────────────────────────── */
+.navbar {
+    @apply fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50
+           rounded-full border border-white/40 bg-white/40 backdrop-blur-sm transition-all duration-300;
+    box-shadow: inset 0 1px 1px 0 rgba(255,255,255,0.4), 0 8px 32px 0 rgba(0,0,0,0.08);
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: #9ca3af;
-    }
+    & .inner {
+        @apply px-8 h-12 md:h-14 flex items-center justify-between;
 
-    .btn {
-        @apply inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed;
-
-        &.btn--primary {
-            @apply bg-primary text-white hover:bg-[#EA580C] shadow-sm;
-        }
-
-        &.btn--secondary {
-            @apply bg-white text-black border border-zinc-200 hover:bg-zinc-50 shadow-sm;
-        }
-
-        &.btn--ghost {
-            @apply text-zinc-600 hover:text-black hover:bg-black/5;
-        }
-
-        &.btn--outline {
-            @apply bg-transparent border border-zinc-300 text-zinc-900 hover:bg-zinc-100;
-        }
-
-        &.btn--sm {
-            @apply px-3 py-1.5 text-xs uppercase tracking-wide;
-        }
-
-        &.btn--md {
-            @apply px-5 py-2.5 text-sm;
-        }
-
-        &.btn--lg {
-            @apply px-8 py-3 text-sm uppercase tracking-wide font-bold;
-        }
-
-        &.btn--full {
-            @apply w-full;
-        }
-    }
-
-    .card {
-        @apply bg-surface border border-white/5 rounded-3xl p-6 shadow-xl;
-
-        & .header {
-            @apply flex justify-between items-center mb-4;
-
-            & h3 {
-                @apply text-lg font-semibold text-zinc-100;
-            }
-        }
-    }
-
-    .navbar {
-        /* Floating Pill Design & Frosted Glass */
-        @apply fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 
-               rounded-full border border-white/40 bg-white/40 backdrop-blur-sm transition-all duration-300;
-
-        /* Subtle top highlight for glass effect */
-        box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.4), 0 8px 32px 0 rgba(0, 0, 0, 0.08);
-      
-        & .inner {
-            @apply px-8 h-12 md:h-14 flex items-center justify-between;
-      
-            & .left {
-                @apply flex items-center space-x-10;
-      
-                & .brand {
-                    @apply flex items-center space-x-2 cursor-pointer z-[51];
-      
-                    & .logo {
-                        @apply w-6 h-6 text-black;
-                    }
-      
-                    & .name {
-                        @apply text-lg font-serif font-bold text-black tracking-tight;
-                    }
-                }
-      
-                & .links {
-                    @apply hidden md:flex items-center space-x-6;
-      
-                    & a {
-                        @apply text-[11px] font-bold uppercase tracking-[0.1em] text-zinc-500 hover:text-black transition-all;
-                    }
-                }
-            }
-      
-            & .actions {
-                @apply flex items-center space-x-3 md:space-x-8;
-      
-                & .desktop-auth {
-                    @apply hidden md:flex items-center space-x-6;
-      
-                    & .greeting {
-                        @apply text-[10px] font-bold uppercase tracking-widest text-zinc-400;
-                    }
-      
-                    & .login {
-                        @apply text-xs font-bold uppercase tracking-widest text-zinc-900 hover:text-primary transition-colors;
-                    }
-      
-                    & .cta {
-                        @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-widest bg-black text-white hover:bg-zinc-800 transition-all shadow-md;
-                    }
-                }
-
-                & .menu-btn {
-                    @apply md:hidden p-2 text-zinc-900 hover:bg-black/5 rounded-lg transition-all active:scale-90 z-[51];
-                }
-            }
-        }
-
-        & .mobile-menu {
-            @apply md:hidden flex flex-col p-6 space-y-5 border-t border-zinc-100 bg-white/70 backdrop-blur-md rounded-b-[2rem];
-            @apply absolute top-full left-0 right-0 mt-0 shadow-2xl overflow-hidden;
-
-            & a {
-                @apply text-sm font-bold uppercase tracking-[0.1em] text-zinc-600 hover:text-black transition-colors;
-            }
-
-            & .mobile-auth {
-                @apply pt-5 border-t border-zinc-100 flex flex-col space-y-4;
-
-                & .btn-mobile {
-                    @apply w-full py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all
-                           bg-black text-white active:scale-95 shadow-md;
-                }
-            }
-        }
-    }
-
-    .auth-modal {
-        @apply fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4;
-
-        & .panel {
-            @apply bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border border-zinc-200;
-
-            & .icon {
-                @apply w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4;
-
-                & .alert {
-                    @apply text-primary w-6 h-6;
-                }
-            }
-
-            & h3 {
-                @apply text-xl font-serif font-bold text-black mb-2;
-            }
-
-            & p {
-                @apply text-zinc-600 text-sm mb-6 leading-relaxed;
-            }
-
-            & .actions {
-                @apply flex flex-col space-y-3;
-
-                & .confirm {
-                    @apply bg-primary hover:bg-orange-600 text-white;
-                }
-
-                & .cancel {
-                    @apply text-xs text-zinc-400 hover:text-black mt-2;
-                }
-            }
-        }
-    }
-
-    .upload {
-        @apply w-full;
-
-        & .dropzone {
-            @apply relative h-48 rounded-xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center cursor-pointer bg-zinc-50 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100;
-
-            &.is-dragging {
-                @apply border-primary bg-orange-50;
-
-                & .drop-icon {
-                    @apply bg-orange-100 text-primary;
-                }
-            }
-
-            & .drop-input {
-                @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10;
-            }
-
-            & .drop-content {
-                @apply flex flex-col items-center pointer-events-none;
-
-                & .drop-icon {
-                    @apply w-12 h-12 rounded-full flex items-center justify-center mb-4 transition-colors bg-zinc-200 text-zinc-500;
-                }
-
-                & p {
-                    @apply text-zinc-900 font-bold text-sm mb-1;
-                }
-
-                & .help {
-                    @apply text-zinc-500 text-xs;
-                }
-            }
-
-            &:not(.is-dragging):hover .drop-icon {
-                @apply bg-zinc-300 text-black;
-            }
-        }
-
-        & .upload-status {
-            @apply h-48 rounded-xl border border-zinc-200 bg-white p-6 flex flex-col justify-center relative overflow-hidden;
-
-            & .status-content {
-                @apply relative z-10 flex flex-col items-center justify-center text-center;
-
-                & .status-icon {
-                    @apply w-12 h-12 rounded-lg bg-zinc-100 flex items-center justify-center text-black mb-3 border border-zinc-200;
-
-                    & .check {
-                        @apply text-green-500;
-                    }
-                }
-
-                & h3 {
-                    @apply text-black font-bold text-sm truncate max-w-full px-4;
-                }
-
-                & .progress {
-                    @apply w-full max-w-[200px] h-1.5 bg-zinc-100 rounded-full mt-3 overflow-hidden;
-
-                    & .bar {
-                        @apply h-full bg-primary transition-all duration-300 ease-out;
-                    }
-                }
-
-                & .status-text {
-                    @apply text-zinc-500 text-xs font-mono uppercase mt-2;
-                }
-            }
-        }
-    }
-
-    .visualizer {
-        @apply min-h-screen bg-background pt-6 pb-10 px-4 md:px-6 flex flex-col items-center font-sans relative;
-
-        & .topbar {
-            @apply w-full max-w-6xl flex items-center justify-between mb-6 px-2;
+        & .left {
+            @apply flex items-center space-x-10;
 
             & .brand {
-                @apply flex items-center space-x-2 cursor-pointer;
-
-                & .logo {
-                    @apply w-6 h-6 text-black;
-                }
-
+                @apply flex items-center space-x-2 cursor-pointer z-[51];
+                & .logo { @apply w-6 h-6 text-black; }
                 & .name {
-                    @apply text-xl font-serif font-bold text-black tracking-tight;
+                    @apply text-base font-semibold text-black;
+                    font-family: "Inter", sans-serif;
+                    letter-spacing: -0.03em;
+                    line-height: 1;
                 }
             }
 
-            & .exit {
-                @apply text-zinc-500 hover:text-black hover:bg-zinc-100;
-
-                & .icon {
-                    @apply w-5 h-5 mr-2;
+            & .links {
+                @apply hidden md:flex items-center space-x-6;
+                & a {
+                    @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-zinc-500 hover:text-black transition-all;
+                    font-family: "Inter", sans-serif;
                 }
             }
         }
 
-        & .content {
-            @apply w-full max-w-6xl grid grid-cols-1 gap-6;
-        }
+        & .actions {
+            @apply flex items-center space-x-3 md:space-x-8;
 
-        & .panel {
-            @apply bg-white rounded-xl border border-zinc-200 shadow-2xl overflow-hidden;
-
-            & .panel-header {
-                @apply flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 border-b border-zinc-100;
-
-                & .panel-meta {
-                    & p {
-                        @apply text-xs font-mono uppercase tracking-widest text-zinc-400;
-                    }
-
-                    & h2 {
-                        @apply text-2xl font-serif font-bold text-black;
-                    }
-
-                    & h3 {
-                        @apply text-lg font-serif font-bold text-black;
-                    }
-
-                    & .note {
-                        @apply text-xs text-zinc-500 mt-1;
-                    }
+            & .desktop-auth {
+                @apply hidden md:flex items-center space-x-6;
+                & .greeting {
+                    @apply text-[10px] font-semibold uppercase tracking-widest text-zinc-400;
+                    font-family: "Inter", sans-serif;
                 }
-
-                & .panel-actions {
-                    @apply flex flex-wrap items-center gap-3;
-
-                    & .export {
-                        @apply bg-primary text-white hover:bg-orange-600 h-9 border-none shadow-sm;
-                    }
-
-                    & .share {
-                        @apply bg-black text-white h-9 shadow-sm hover:bg-zinc-800;
-                    }
+                & .login {
+                    @apply text-xs font-semibold uppercase tracking-widest text-zinc-900 hover:text-primary transition-colors;
+                    font-family: "Inter", sans-serif;
+                }
+                & .cta {
+                    @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-[10px]
+                           font-semibold uppercase tracking-widest bg-black text-white hover:bg-zinc-800 transition-all shadow-md;
+                    font-family: "Inter", sans-serif;
+                    line-height: 1;
                 }
             }
 
-            & .render-area {
-                @apply relative bg-zinc-100 min-h-[420px];
-
-                & .render-img {
-                    @apply w-full h-full object-contain transition-all duration-700 opacity-100 scale-100;
-                }
-
-                &.is-processing {
-                    & .render-img {
-                        @apply opacity-50 blur-sm scale-105;
-                    }
-                }
-
-                & .render-placeholder {
-                    @apply w-full h-full flex items-center justify-center;
-                }
-
-                & .render-fallback {
-                    @apply w-full h-full object-contain opacity-50;
-                }
-
-                & .render-overlay {
-                    @apply absolute inset-0 flex flex-col items-center justify-center z-30 bg-white/60 backdrop-blur-sm transition-opacity duration-300;
-
-                    & .rendering-card {
-                        @apply bg-white px-6 py-4 rounded-xl border border-zinc-200 flex flex-col items-center shadow-2xl;
-
-                        & .spinner {
-                            @apply w-8 h-8 mb-3 animate-spin text-primary;
-                        }
-
-                        & .title {
-                            @apply text-sm font-bold text-black;
-                        }
-
-                        & .subtitle {
-                            @apply text-xs text-zinc-500 mt-1;
-                        }
-                    }
-                }
-            }
-
-            &.compare {
-                @apply shadow-xl;
-
-                & .panel-header {
-                    @apply flex items-center justify-between;
-
-                    & .hint {
-                        @apply text-xs text-zinc-400;
-                    }
-                }
-
-                & .compare-stage {
-                    @apply relative bg-zinc-100 overflow-hidden;
-                }
-
-                & .compare-fallback {
-                    @apply flex items-center justify-center;
-                }
-
-                & .compare-img {
-                    @apply w-full h-auto object-contain;
-                }
+            & .menu-btn {
+                @apply md:hidden p-2 text-zinc-900 hover:bg-black/5 rounded-lg transition-all active:scale-90 z-[51];
             }
         }
     }
 
-    .home {
-        @apply min-h-screen bg-background relative overflow-x-hidden text-foreground;
+    & .mobile-menu {
+        @apply md:hidden flex flex-col p-6 space-y-5 border-t border-zinc-100 bg-white/70 backdrop-blur-md rounded-b-[2rem];
+        @apply absolute top-full left-0 right-0 mt-0 shadow-2xl overflow-hidden;
 
-        & .content {
+        & a {
+            @apply text-sm font-semibold uppercase tracking-[0.08em] text-zinc-600 hover:text-black transition-colors;
+            font-family: "Inter", sans-serif;
+        }
+
+        & .mobile-auth {
+            @apply pt-5 border-t border-zinc-100 flex flex-col space-y-4;
+            & .btn-mobile {
+                @apply w-full py-3 rounded-xl text-[10px] font-semibold uppercase tracking-widest transition-all
+                       bg-black text-white active:scale-95 shadow-md;
+                font-family: "Inter", sans-serif;
+            }
+        }
+    }
+}
+
+/* ── Auth Modal ─────────────────────────────────────────────────── */
+.auth-modal {
+    @apply fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4;
+
+    & .panel {
+        @apply bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border border-zinc-200;
+
+        & .icon {
+            @apply w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4;
+            & .alert { @apply text-primary w-6 h-6; }
+        }
+
+        & h3 {
+            @apply text-xl font-bold text-black mb-2;
+            letter-spacing: -0.02em;
+        }
+
+        & p {
+            @apply text-zinc-500 text-sm mb-6 leading-relaxed;
+        }
+
+        & .actions {
+            @apply flex flex-col space-y-3;
+            & .confirm { @apply bg-primary hover:bg-orange-600 text-white; }
+            & .cancel  { @apply text-xs text-zinc-400 hover:text-black mt-2; }
+        }
+    }
+}
+
+/* ── Upload ─────────────────────────────────────────────────────── */
+.upload {
+    @apply w-full;
+
+    & .dropzone {
+        @apply relative h-48 rounded-xl border-2 border-dashed transition-all duration-300
+               flex flex-col items-center justify-center cursor-pointer
+               bg-zinc-50 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100;
+
+        &.is-dragging {
+            @apply border-primary bg-orange-50;
+            & .drop-icon { @apply bg-orange-100 text-primary; }
+        }
+
+        & .drop-input { @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10; }
+
+        & .drop-content {
+            @apply flex flex-col items-center pointer-events-none;
+            & .drop-icon {
+                @apply w-12 h-12 rounded-full flex items-center justify-center mb-4
+                       transition-colors bg-zinc-200 text-zinc-500;
+            }
+            & p { @apply text-zinc-900 font-semibold text-sm mb-1; }
+            & .help { @apply text-zinc-500 text-xs; }
+        }
+
+        &:not(.is-dragging):hover .drop-icon { @apply bg-zinc-300 text-black; }
+    }
+
+    & .upload-status {
+        @apply h-48 rounded-xl border border-zinc-200 bg-white p-6 flex flex-col justify-center relative overflow-hidden;
+
+        & .status-content {
+            @apply relative z-10 flex flex-col items-center justify-center text-center;
+
+            & .status-icon {
+                @apply w-12 h-12 rounded-lg bg-zinc-100 flex items-center justify-center text-black mb-3 border border-zinc-200;
+                & .check { @apply text-green-500; }
+            }
+
+            & h3 { @apply text-black font-semibold text-sm truncate max-w-full px-4; }
+
+            & .progress {
+                @apply w-full max-w-[200px] h-1.5 bg-zinc-100 rounded-full mt-3 overflow-hidden;
+                & .bar { @apply h-full bg-primary transition-all duration-300 ease-out; }
+            }
+
+            & .status-text { @apply text-zinc-500 text-xs font-mono uppercase mt-2; }
+        }
+    }
+}
+
+/* ── Visualizer ─────────────────────────────────────────────────── */
+.visualizer {
+    @apply min-h-screen bg-background pt-6 pb-10 px-4 md:px-6 flex flex-col items-center font-sans relative;
+
+    & .topbar {
+        @apply w-full max-w-6xl flex items-center justify-between mb-6 px-2;
+
+        & .brand {
+            @apply flex items-center space-x-2 cursor-pointer;
+            & .logo { @apply w-6 h-6 text-black; }
+            & .name {
+                @apply text-lg font-semibold text-black;
+                letter-spacing: -0.03em;
+            }
+        }
+
+        & .exit {
+            @apply text-zinc-500 hover:text-black hover:bg-zinc-100;
+            & .icon { @apply w-5 h-5 mr-2; }
+        }
+    }
+
+    & .content { @apply w-full max-w-6xl grid grid-cols-1 gap-6; }
+
+    & .panel {
+        @apply bg-white rounded-xl border border-zinc-200 shadow-2xl overflow-hidden;
+
+        & .panel-header {
+            @apply flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 border-b border-zinc-100;
+
+            & .panel-meta {
+                & p { @apply text-xs font-mono uppercase tracking-widest text-zinc-400; }
+                & h2 {
+                    @apply text-2xl font-bold text-black;
+                    letter-spacing: -0.025em;
+                }
+                & h3 {
+                    @apply text-lg font-semibold text-black;
+                    letter-spacing: -0.02em;
+                }
+                & .note { @apply text-xs text-zinc-500 mt-1; }
+            }
+
+            & .panel-actions {
+                @apply flex flex-wrap items-center gap-3;
+                & .export { @apply bg-primary text-white hover:bg-orange-600 h-9 border-none shadow-sm; }
+                & .share  { @apply bg-black text-white h-9 shadow-sm hover:bg-zinc-800; }
+            }
+        }
+
+        & .render-area {
+            @apply relative bg-zinc-100 min-h-[420px];
+            & .render-img { @apply w-full h-full object-contain transition-all duration-700 opacity-100 scale-100; }
+            &.is-processing .render-img { @apply opacity-50 blur-sm scale-105; }
+            & .render-placeholder { @apply w-full h-full flex items-center justify-center; }
+            & .render-fallback { @apply w-full h-full object-contain opacity-50; }
+
+            & .render-overlay {
+                @apply absolute inset-0 flex flex-col items-center justify-center z-30
+                       bg-white/60 backdrop-blur-sm transition-opacity duration-300;
+
+                & .rendering-card {
+                    @apply bg-white px-6 py-4 rounded-xl border border-zinc-200 flex flex-col items-center shadow-2xl;
+                    & .spinner  { @apply w-8 h-8 mb-3 animate-spin text-primary; }
+                    & .title    { @apply text-sm font-semibold text-black; }
+                    & .subtitle { @apply text-xs text-zinc-500 mt-1; }
+                }
+            }
+        }
+
+        &.compare {
+            @apply shadow-xl;
+            & .panel-header {
+                @apply flex items-center justify-between;
+                & .hint { @apply text-xs text-zinc-400; }
+            }
+            & .compare-stage   { @apply relative bg-zinc-100 overflow-hidden; }
+            & .compare-fallback { @apply flex items-center justify-center; }
+            & .compare-img     { @apply w-full h-auto object-contain; }
+        }
+    }
+}
+
+/* ── Home ───────────────────────────────────────────────────────── */
+.home {
+    @apply min-h-screen bg-background relative overflow-x-hidden text-foreground;
+
+    & .content { @apply flex flex-col; }
+
+    /* Hero */
+    & .hero {
+        @apply relative w-full pt-16 md:pt-[72px] px-4 md:px-6;
+
+        & .hero-card {
+            @apply relative w-full max-w-7xl mx-auto mt-[10px] rounded-4xl overflow-hidden
+                   flex flex-col items-center text-center py-20 md:py-32 px-6 z-10;
+            background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+                              url('./assets/hero_bg_house.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            & > * { @apply relative z-20; }
+        }
+
+        & .announce {
+            @apply mb-8 inline-flex items-center px-3 py-1 rounded-md bg-white/90
+                   backdrop-blur-sm border border-zinc-200 shadow-sm;
+            .dot {
+                @apply w-4 h-4 rounded bg-blue-100 flex items-center justify-center mr-2;
+                .pulse { @apply w-2 h-2 rounded-full bg-blue-500 animate-pulse; }
+            }
+            & p {
+                @apply text-[10px] font-semibold uppercase tracking-widest text-zinc-600;
+                font-family: "Inter", sans-serif;
+            }
+        }
+
+        & h1 {
+            @apply text-6xl md:text-8xl leading-[0.95] text-white mb-8 max-w-5xl mx-auto;
+            font-family: "Inter", sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        & .subtitle {
+            @apply max-w-2xl mx-auto text-xs md:text-sm uppercase tracking-widest
+                   text-zinc-200 mb-10 leading-relaxed;
+            font-family: "Inter", sans-serif;
+            font-weight: 400;
+        }
+
+        & .actions {
+            @apply flex flex-col sm:flex-row gap-4 justify-center mb-16;
+
+            & .cta {
+                @apply inline-flex items-center justify-center rounded-md transition-all duration-200
+                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background
+                       px-8 py-3 text-sm uppercase tracking-wide font-semibold bg-primary text-white
+                       hover:bg-[#ea580c] shadow-md;
+                font-family: "Inter", sans-serif;
+                letter-spacing: 0.04em;
+                line-height: 1;
+                & .icon { @apply ml-2 w-4 h-4; }
+            }
+
+            & .demo {
+                @apply px-8 bg-white rounded-md hover:bg-zinc-50;
+                font-family: "Inter", sans-serif;
+                font-weight: 500;
+                line-height: 1;
+            }
+        }
+    }
+
+    /* ── Guide Section ──────────────────────────────────────────── */
+    & .guide {
+        @apply w-full bg-white border-b border-zinc-100;
+        @apply py-20 md:py-28 px-4 md:px-6;
+        @apply opacity-0 translate-y-10 transition-all duration-1000 ease-out;
+
+        &.is-visible {
+            @apply opacity-100 translate-y-0;
+        }
+
+        & .guide-inner {
+            @apply max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center;
+        }
+
+        /* Left */
+        & .guide-left {
             @apply flex flex-col;
         }
 
-        & .hero {
-            @apply relative w-full pt-16 md:pt-[72px] px-4 md:px-6;
-            
-            & .hero-card {
-                @apply relative w-full max-w-7xl mx-auto mt-[10px] rounded-4xl overflow-hidden flex flex-col items-center text-center py-20 md:py-32 px-6 z-10;
-                
-                /* Background with dark overlay */
-                background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), 
-                                  url('./assets/hero_bg_house.webp');
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
+        & .guide-eyebrow {
+            @apply inline-flex items-center mb-5;
+            font-family: "Inter", sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #f97316;
+        }
 
-                /* Ensure internal content is layered correctly above the background */
-                & > * {
-                    @apply relative z-20;
+        & .guide-heading {
+            @apply mb-4;
+            font-family: "Inter", sans-serif;
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            color: #111111;
+        }
+
+        & .guide-sub {
+            @apply mb-10;
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: #6b7280;
+            max-width: 360px;
+        }
+
+        & .guide-steps {
+            @apply flex flex-col gap-1;
+        }
+
+        & .guide-step {
+            @apply text-left flex gap-4 px-4 py-4 rounded-xl border transition-all duration-300 cursor-pointer;
+            border-color: transparent;
+            background: transparent;
+
+            &.is-active {
+                background: #fafafa;
+                border-color: #e5e7eb;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+
+                & .step-num { color: #f97316; }
+                & .step-line { background: #f97316; }
+
+                & .step-body h4 {
+                    color: #111111;
+                }
+
+                & .step-body p {
+                    max-height: 80px;
+                    opacity: 1;
                 }
             }
 
-            & .announce {
-                @apply mb-8 inline-flex items-center px-3 py-1 rounded-md bg-white/90 backdrop-blur-sm border border-zinc-200 shadow-sm;
+            &:hover:not(.is-active) {
+                background: #f9fafb;
+            }
 
-                .dot {
-                    @apply w-4 h-4 rounded bg-blue-100 flex items-center justify-center mr-2;
+            & .step-indicator {
+                @apply flex flex-col items-center gap-1 pt-0.5 flex-shrink-0;
+                width: 28px;
 
-                    .pulse {
-                        @apply w-2 h-2 rounded-full bg-blue-500 animate-pulse;
-                    }
+                & .step-num {
+                    font-family: "Inter", sans-serif;
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #d1d5db;
+                    transition: color 0.3s;
+                    letter-spacing: 0;
+                }
+
+                & .step-line {
+                    width: 1px;
+                    flex: 1;
+                    min-height: 20px;
+                    background: #e5e7eb;
+                    transition: background 0.3s;
+                }
+            }
+
+            & .step-body {
+                & h4 {
+                    font-family: "Inter", sans-serif;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #6b7280;
+                    letter-spacing: -0.01em;
+                    transition: color 0.3s;
+                    line-height: 1.3;
                 }
 
                 & p {
-                    @apply text-[10px] font-bold uppercase tracking-widest text-zinc-600;
-                }
-            }
-
-            & h1 {
-                @apply text-6xl md:text-8xl font-serif leading-[0.95] text-white mb-8 max-w-5xl mx-auto;
-            }
-
-            & .subtitle {
-                @apply max-w-2xl mx-auto text-xs md:text-sm font-mono uppercase tracking-widest text-zinc-200 mb-10 leading-relaxed;
-            }
-
-            & .actions {
-                @apply flex flex-col sm:flex-row gap-4 justify-center mb-16;
-
-                & .cta {
-                    @apply inline-flex items-center justify-center rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background px-8 py-3 text-sm uppercase tracking-wide font-bold bg-primary text-white hover:bg-[#ea580c] shadow-md;
-
-                    & .icon {
-                        @apply ml-2 w-4 h-4;
-                    }
-                }
-
-                & .demo {
-                    @apply px-8 bg-white rounded-md hover:bg-zinc-50;
+                    font-family: "Inter", sans-serif;
+                    font-size: 13px;
+                    font-weight: 400;
+                    color: #9ca3af;
+                    line-height: 1.65;
+                    margin-top: 4px;
+                    max-height: 0;
+                    opacity: 0;
+                    overflow: hidden;
+                    transition: max-height 0.5s ease-out, opacity 0.4s ease-out;
                 }
             }
         }
 
-        & .upload-shell {
-            @apply w-full max-w-5xl mx-auto relative rounded-3xl overflow-hidden bg-gradient-to-b from-blue-100/50 to-white/50 border border-blue-100 p-6 shadow-sm min-h-[400px] flex items-center justify-center z-30 mt-[22px];
-            @apply opacity-0 translate-y-16 transition-all duration-1000 ease-out;
+        /* Right */
+        & .guide-right {
+            @apply relative flex flex-col gap-4;
+        }
 
-            &.is-visible {
-                @apply opacity-100 translate-y-0;
+        & .guide-slider-wrap {
+            @apply relative w-full overflow-hidden shadow-2xl;
+            aspect-ratio: 4 / 3;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        & .slider-label {
+            @apply absolute top-4 z-20 pointer-events-none;
+            font-family: "Inter", sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+
+            &--before {
+                left: 16px;
+                background: rgba(255,255,255,0.92);
+                color: #374151;
+                border: 1px solid #e5e7eb;
             }
 
-            & .grid-overlay {
-                @apply absolute inset-0 opacity-40 pointer-events-none;
+            &--after {
+                right: 16px;
+                background: rgba(0,0,0,0.75);
+                color: #ffffff;
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+        }
 
-                background-image:
-                        linear-gradient(#3b82f6 1px, transparent 1px),
-                        linear-gradient(90deg, #3b82f6 1px, transparent 1px);
+        & .slider-drag-hint {
+            @apply absolute bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid #e5e7eb;
+            border-radius: 100px;
+            padding: 5px 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 
-                background-size: 60px 60px;
+            & span {
+                font-family: "Inter", sans-serif;
+                font-size: 10px;
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: #6b7280;
+            }
+        }
+
+        & .guide-badge {
+            @apply inline-flex items-center gap-3 self-start;
+            padding: 10px 16px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+
+            & .badge-num {
+                font-family: "Inter", sans-serif;
+                font-size: 11px;
+                font-weight: 700;
+                color: #f97316;
+                letter-spacing: 0.05em;
             }
 
-            & .upload-card {
-                @apply relative w-full max-w-xl bg-white rounded-2xl shadow-xl overflow-hidden border border-zinc-100 p-8 z-10 transition-transform hover:scale-[1.01] duration-500;
+            & .badge-label {
+                font-family: "Inter", sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                color: #374151;
+                letter-spacing: -0.01em;
+            }
+        }
+    }
 
-                & .upload-head {
-                    @apply text-center mb-6;
+    /* Upload Shell */
+    & .upload-shell {
+        @apply w-full max-w-5xl mx-auto relative rounded-3xl overflow-hidden
+               bg-gradient-to-b from-blue-100/50 to-white/50 border border-blue-100
+               p-6 shadow-sm min-h-[400px] flex items-center justify-center z-30 mt-[22px];
+        @apply opacity-0 translate-y-16 transition-all duration-1000 ease-out;
 
-                    & .upload-icon {
-                        @apply w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3;
+        &.is-visible { @apply opacity-100 translate-y-0; }
 
-                        & .icon {
-                            @apply text-orange-500 w-6 h-6;
-                        }
-                    }
+        & .grid-overlay {
+            @apply absolute inset-0 opacity-40 pointer-events-none;
+            background-image:
+                linear-gradient(#3b82f6 1px, transparent 1px),
+                linear-gradient(90deg, #3b82f6 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
 
-                    & h3 {
-                        @apply text-xl font-serif font-bold text-black;
+        & .upload-card {
+            @apply relative w-full max-w-xl bg-white rounded-2xl shadow-xl overflow-hidden
+                   border border-zinc-100 p-8 z-10 transition-transform hover:scale-[1.01] duration-500;
+
+            & .upload-head {
+                @apply text-center mb-6;
+
+                & .upload-icon {
+                    @apply w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3;
+                    & .icon { @apply text-orange-500 w-6 h-6; }
+                }
+
+                & h3 {
+                    @apply text-xl font-semibold text-black;
+                    font-family: "Inter", sans-serif;
+                    letter-spacing: -0.02em;
+                }
+
+                & p {
+                    @apply text-zinc-400 text-sm mt-1;
+                    font-family: "Inter", sans-serif;
+                    font-weight: 400;
+                }
+            }
+        }
+    }
+
+    /* Projects */
+    & .projects {
+        @apply pt-16 pb-24 bg-white relative border-b border-zinc-100;
+
+        & .section-inner {
+            @apply max-w-7xl mx-auto px-6;
+
+            & .section-head {
+                @apply flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6;
+
+                & .copy {
+                    @apply max-w-2xl;
+
+                    & h2 {
+                        @apply text-4xl text-black mb-4;
+                        font-family: "Inter", sans-serif;
+                        font-weight: 700;
+                        letter-spacing: -0.03em;
                     }
 
                     & p {
-                        @apply text-zinc-500 text-sm mt-1;
+                        @apply text-zinc-500 text-base;
+                        font-family: "Inter", sans-serif;
+                        font-weight: 400;
+                        line-height: 1.6;
                     }
                 }
             }
-        }
 
-        & .projects {
-            @apply pt-16 pb-24 bg-white relative border-b border-zinc-100;
+            & .loading { @apply flex items-center justify-center text-sm text-zinc-500; }
 
-            & .section-inner {
-                @apply max-w-7xl mx-auto px-6;
+            & .projects-grid {
+                @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
 
-                & .section-head {
-                    @apply flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6;
+                & .project-card {
+                    @apply relative bg-white rounded-xl overflow-hidden border border-zinc-200
+                           shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full;
 
-                    & .copy {
-                        @apply max-w-2xl;
+                    & .preview {
+                        @apply aspect-[4/3] overflow-hidden bg-zinc-100 relative;
+                        & img { @apply w-full h-full object-cover group-hover:scale-105 transition-transform duration-700; }
 
-                        & h2 {
-                            @apply text-4xl font-serif text-black mb-4;
-                        }
-
-                        & p {
-                            @apply text-zinc-500 text-lg;
-                        }
-                    }
-                }
-
-                & .loading {
-                    @apply flex items-center justify-center text-sm text-zinc-500;
-                }
-
-                & .projects-grid {
-                    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
-
-                    & .project-card {
-                        @apply relative bg-white rounded-xl overflow-hidden border border-zinc-200 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full;
-
-                        & .preview {
-                            @apply aspect-[4/3] overflow-hidden bg-zinc-100 relative;
-
-                            & img {
-                                @apply w-full h-full object-cover group-hover:scale-105 transition-transform duration-700;
-                            }
-
-                            & .badge {
-                                @apply absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-md border border-zinc-200 shadow-sm;
-
-                                & span {
-                                    @apply text-[10px] font-bold uppercase tracking-wider text-zinc-800;
-                                }
-                            }
-                        }
-
-                        & .card-body {
-                            @apply p-5 flex justify-between items-center bg-white border-t border-zinc-100 grow;
-
-                            & h3 {
-                                @apply text-lg font-serif font-bold text-zinc-900 group-hover:text-primary transition-colors;
-                            }
-
-                            & .meta {
-                                @apply flex items-center text-zinc-400 text-xs mt-1 space-x-2;
-
-                                & span {
-                                    @apply font-mono uppercase;
-                                }
-
-                                & span:last-child {
-                                    @apply text-zinc-400 text-[10px] uppercase tracking-wide;
-                                }
-                            }
-
-                            & .arrow {
-                                @apply w-10 h-10 rounded-full bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300;
+                        & .badge {
+                            @apply absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2 py-1
+                                   rounded-md border border-zinc-200 shadow-sm;
+                            & span {
+                                @apply text-[10px] font-bold uppercase tracking-wider text-zinc-800;
+                                font-family: "Inter", sans-serif;
                             }
                         }
                     }
 
-                    & .empty {
-                        @apply col-span-full rounded-xl border border-dashed border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-500;
+                    & .card-body {
+                        @apply p-5 flex justify-between items-center bg-white border-t border-zinc-100 grow;
+
+                        & h3 {
+                            @apply text-base font-semibold text-zinc-900 group-hover:text-primary transition-colors;
+                            font-family: "Inter", sans-serif;
+                            letter-spacing: -0.01em;
+                        }
+
+                        & .meta {
+                            @apply flex items-center text-zinc-400 text-xs mt-1 space-x-2;
+                            & span {
+                                font-family: "Inter", sans-serif;
+                                text-transform: uppercase;
+                                font-weight: 500;
+                            }
+                            & span:last-child { @apply text-zinc-400 text-[10px] uppercase tracking-wide; }
+                        }
+
+                        & .arrow {
+                            @apply w-10 h-10 rounded-full bg-zinc-50 border border-zinc-200
+                                   flex items-center justify-center text-zinc-400
+                                   group-hover:bg-primary group-hover:text-white group-hover:border-primary
+                                   transition-all duration-300;
+                        }
                     }
                 }
-            }
-        }
 
-        & .partners {
-            @apply border-t border-zinc-200 py-12 bg-white;
-
-            & .section-inner {
-                @apply max-w-7xl mx-auto px-6;
-
-                & .logos {
-                    @apply grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-60 grayscale hover:grayscale-0 transition-all duration-500;
-                }
-
-                & .logo-item {
-                    @apply flex items-center justify-center space-x-2 cursor-pointer;
-
-                    & div {
-                        @apply text-zinc-800 group-hover:text-black transition-colors;
-                    }
-
-                    & span {
-                        @apply font-bold text-xl text-zinc-800 group-hover:text-black transition-colors tracking-tight;
-                    }
+                & .empty {
+                    @apply col-span-full rounded-xl border border-dashed border-zinc-200
+                           bg-zinc-50 p-10 text-center text-sm text-zinc-500;
+                    font-family: "Inter", sans-serif;
                 }
             }
         }
     }
 
-    .visualizer-route {
-        @apply min-h-screen flex items-center justify-center;
+    /* Partners */
+    & .partners {
+        @apply border-t border-zinc-200 py-12 bg-white;
 
-        &.loading {
-            @apply text-sm text-zinc-500;
+        & .section-inner {
+            @apply max-w-7xl mx-auto px-6;
+
+            & .logos {
+                @apply grid grid-cols-2 md:grid-cols-5 gap-8 items-center
+                       opacity-60 grayscale hover:grayscale-0 transition-all duration-500;
+            }
+
+            & .logo-item {
+                @apply flex items-center justify-center space-x-2 cursor-pointer;
+                & div  { @apply text-zinc-800 group-hover:text-black transition-colors; }
+                & span {
+                    @apply font-bold text-xl text-zinc-800 group-hover:text-black transition-colors tracking-tight;
+                    font-family: "Inter", sans-serif;
+                }
+            }
         }
     }
+}
+
+/* ── Visualizer Route ───────────────────────────────────────────── */
+.visualizer-route {
+    @apply min-h-screen flex items-center justify-center;
+    &.loading { @apply text-sm text-zinc-500; }
+}
