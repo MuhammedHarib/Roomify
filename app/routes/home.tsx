@@ -10,11 +10,17 @@ import { Layers } from "lucide-react";
 
 import Upload from "../../components/upload";
 
+import Footer from "../../components/Footer";
+
+
 import { useNavigate } from "react-router";
 
 import { createProject, getProjects } from "~/lib/puter.action"
 
 import { useRef, useState, useEffect } from "react";
+
+import beforeImg from "~/assets/before_img.png";
+import afterImg from "~/assets/after_img.png";
 
 import { ReactCompareSlider, ReactCompareSliderImage } from "react-compare-slider";
 
@@ -46,8 +52,8 @@ const GUIDE_STEPS = [
   },
 ];
 
-const BEFORE_IMAGE = "https://roomify-mlhuk267-dfwu1i.puter.site/projects/1770803585402/rendered.png";
-const AFTER_IMAGE  = "https://roomify-mlhuk267-dfwu1i.puter.site/projects/1770803585402/rendered.png";
+const BEFORE_IMAGE = beforeImg || "";
+const AFTER_IMAGE  = afterImg || "";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -58,6 +64,12 @@ export default function Home() {
   const [isVisible, setIsVisible]       = useState(false);
   const [guideVisible, setGuideVisible] = useState(false);
   const [activeStep, setActiveStep]     = useState(0);
+
+  // Guard for SSR: Only render complex interactive components on the client
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -212,7 +224,7 @@ export default function Home() {
                 <div className="slider-label slider-label--before">2D Plan</div>
                 <div className="slider-label slider-label--after">3D Render</div>
 
-                <ReactCompareSlider
+                {isMounted && <ReactCompareSlider
                   defaultValue={40}
                   style={{ width: "100%", height: "100%" }}
                   itemOne={
@@ -234,7 +246,7 @@ export default function Home() {
                       }}
                     />
                   }
-                />
+                />}
 
                 <div className="slider-drag-hint">
                   <span>← Drag to compare →</span>
@@ -315,6 +327,7 @@ export default function Home() {
           </div>
         </section>
 
+        <Footer />
       </main>
     </div>
   )
