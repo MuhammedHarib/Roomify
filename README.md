@@ -2,6 +2,21 @@
 
 Roomify is a modern, AI-first architectural design environment built to help architects and designers visualize, render, and manage projects with unprecedented speed. By leveraging AI-powered workers, Roomify transforms simple floor plans into high-quality renders at the speed of thought.
 
+## 🖼️ Application UI
+
+### 🔹 Main Interface
+
+![Roomify UI](https://github.com/MuhammedHarib/Roomify/blob/87b492c3bd1d5edbe2861fc0e4a518b53b1e8b38/image-1-ui.png)
+
+A clean and modern dashboard where users can upload floor plans, manage projects, and interact with AI rendering features.
+
+---
+
+### 🔹 Visualizer (Before vs After)
+
+![Roomify Visualizer](https://github.com/MuhammedHarib/Roomify/blob/87b492c3bd1d5edbe2861fc0e4a518b53b1e8b38/image-2-visulizer.png)
+
+
 ## 🚀 Main Functionalities
 
 - **AI Rendering**: Transform uploaded floor plans (JPG/PNG) into beautifully rendered architectural spaces.
